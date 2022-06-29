@@ -1,12 +1,15 @@
 package com.example.ukiddingme.network
 
 import com.example.ukiddingme.model.JokesResponse
+import com.example.ukiddingme.model.SingleJoke
 import retrofit2.Response
 import javax.inject.Inject
 
 
 interface JokesRepository {
     suspend fun getJokes(qty:Int?=null):Response<JokesResponse>
+    suspend fun getCustomJoke(firstName: String, lastName: String): Response<SingleJoke>
+
 }
 
 class JokesRepositoryImpl @Inject constructor(
@@ -18,5 +21,12 @@ class JokesRepositoryImpl @Inject constructor(
             jokesService.getJokes(it)
         } ?: jokesService.getJokes()
 }
+
+    override suspend fun getCustomJoke(
+        firstName: String,
+        lastName: String
+    ): Response<SingleJoke> {
+        return jokesService.getPersonalizedJoke(firstName,lastName)
+    }
 
 }

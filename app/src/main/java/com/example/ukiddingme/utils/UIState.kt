@@ -1,6 +1,7 @@
 package com.example.ukiddingme.utils
 
 import com.example.ukiddingme.model.JokesResponse
+import com.example.ukiddingme.model.SingleJoke
 
 /**
  * This is a sealed class known as an enum with superpowers
@@ -9,7 +10,7 @@ import com.example.ukiddingme.model.JokesResponse
 sealed class UIState{
 
     object LOADING : UIState()
-    data class SUCCESS(val response: JokesResponse): UIState()
+    data class SUCCESS<T>(val response: T): UIState()
     data class ERROR(val error: Exception): UIState()
 }
 

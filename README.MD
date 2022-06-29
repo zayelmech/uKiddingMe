@@ -7,8 +7,8 @@
 - Still working on
 
 ## Text Input
-- Fragment was 
-- Still working on
+- Fragment was created
+- Is working now
 
 ## Never ending List
 - Still working on

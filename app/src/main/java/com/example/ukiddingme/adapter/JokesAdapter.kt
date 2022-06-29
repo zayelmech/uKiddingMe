@@ -17,6 +17,7 @@ class JokesAdapter(
         notifyDataSetChanged()
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JokesViewHolder =
         JokesViewHolder(
             CardItemBinding.inflate(

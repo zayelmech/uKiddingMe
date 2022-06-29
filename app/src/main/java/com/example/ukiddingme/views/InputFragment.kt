@@ -1,60 +1,88 @@
 package com.example.ukiddingme.views
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.ukiddingme.R
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.ukiddingme.databinding.FragmentInputBinding
+import com.example.ukiddingme.model.SingleJoke
+import com.example.ukiddingme.utils.UIState
+import com.example.ukiddingme.viewmodel.JokesViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [InputFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class InputFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val binding by lazy {
+        FragmentInputBinding.inflate(layoutInflater)
     }
+
+    private val jokesViewModel by lazy {
+        ViewModelProvider(requireActivity())[JokesViewModel::class.java]
+    }
+
+    private lateinit var newDialog: DialogMessage
+
+    private var flag: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_input, container, false)
-    }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment InputFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            InputFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        binding.submitButton.setOnClickListener {
+            Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "SUBMIT WAS CLICKED")
+
+            val name = binding.textInputName.text?.toString()
+            val lastname = binding.textInputLastname.text?.toString()
+            jokesViewModel.getCustomJoke(name?:"John", lastname?:"Doe")
+
+            flag=true
+        }
+
+        jokesViewModel.customJoke.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UIState.LOADING -> {
+                    Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "LOADING")
+                    binding.loadingSpinner.visibility = View.VISIBLE
+
+                }
+                is UIState.SUCCESS<*> -> {
+                    Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "SUCCESS")
+
+                    (state as UIState.SUCCESS<SingleJoke>).response
+                    binding.loadingSpinner.visibility = View.GONE
+
+                    newDialog = DialogMessage(state.response.value.joke)
+
+                    if (flag) {
+                        newDialog.show(
+                            childFragmentManager,
+                            DialogMessage.TAG
+                        )
+                    }
+
+
+                    //binding.instructions.text = state.response.value.joke
+                }
+                is UIState.ERROR -> {
+                    Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "ERROR")
+
+                    binding.loadingSpinner.visibility = View.GONE
+
                 }
             }
+        }
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+            flag = false
+        Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "DESTROYED")
     }
 }
+

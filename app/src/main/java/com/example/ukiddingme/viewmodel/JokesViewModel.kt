@@ -1,5 +1,6 @@
 package com.example.ukiddingme.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,10 @@ class JokesViewModel @Inject constructor(
 
     private val _jokes: MutableLiveData<UIState> = MutableLiveData(UIState.LOADING)
     val jokes: LiveData<UIState> get() = _jokes
+
+    private val _customJoke: MutableLiveData<UIState> = MutableLiveData(UIState.LOADING)
+    val customJoke : LiveData<UIState> get() = _customJoke
+
 
     fun getJokesSet(qty: Int? = null) {
         //this is a global coroutine scope
@@ -55,9 +60,35 @@ class JokesViewModel @Inject constructor(
 
     }
 
+    fun getCustomJoke(firstName: String, lastName: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(1000)
+            try {
+                val response = jokesRepository.getCustomJoke(firstName,lastName)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        withContext(Dispatchers.Main) {
+                            _customJoke.value = UIState.SUCCESS(it)
+                        }
+                    } ?: throw Exception("DATA IS NULL")
+                } else {
+                    throw Exception(response.errorBody()?.toString())
+
+                }
+            } catch (e: Exception) {
+                Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", e.message.toString())
+
+                withContext(Dispatchers.Main) {
+                    _customJoke.value = UIState.ERROR(e)
+                }
+            }
+        }
+    }
+
 
     override fun onCleared() {
         super.onCleared()
+
         // here you remove the viewModel
     }
 }

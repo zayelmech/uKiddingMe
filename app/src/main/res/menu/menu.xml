@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/random_layout"
+        android:icon="@drawable/vector_smile"
+        android:title="RANDOM" />
+    <item
+        android:id="@+id/personalized"
+        android:icon="@drawable/vector_edit"
+        android:title="PERSONALIZED" />
+    <item
+        android:id="@+id/fragment_jokes"
+        android:icon="@drawable/vector_list"
+        android:title="LIST" />
+</menu>

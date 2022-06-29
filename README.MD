@@ -4,7 +4,7 @@
 
 ## Random Joke
 - Fragment was create
-- Still working on
+- Is working now
 
 ## Text Input
 - Fragment was created

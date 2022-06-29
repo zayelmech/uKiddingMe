@@ -9,7 +9,7 @@ import javax.inject.Inject
 interface JokesRepository {
     suspend fun getJokes(qty:Int?=null):Response<JokesResponse>
     suspend fun getCustomJoke(firstName: String, lastName: String): Response<SingleJoke>
-
+    suspend fun getRandomJoke(): Response<SingleJoke>
 }
 
 class JokesRepositoryImpl @Inject constructor(
@@ -27,6 +27,10 @@ class JokesRepositoryImpl @Inject constructor(
         lastName: String
     ): Response<SingleJoke> {
         return jokesService.getPersonalizedJoke(firstName,lastName)
+    }
+
+    override suspend fun getRandomJoke(): Response<SingleJoke> {
+        return jokesService.getRandomJoke()
     }
 
 }

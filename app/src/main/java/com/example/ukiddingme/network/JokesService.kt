@@ -22,6 +22,9 @@ interface JokesService {
 
     ): Response<SingleJoke>
 
+    @GET(CHARACTER_PATH)
+    suspend fun getRandomJoke():  Response<SingleJoke>
+
     companion object {
         const val BASE_URL = "http://api.icndb.com/jokes/"
 

@@ -37,17 +37,19 @@ class InputFragment : Fragment() {
 
             val name = binding.textInputName.text?.toString()
             val lastname = binding.textInputLastname.text?.toString()
-            jokesViewModel.getCustomJoke(name?:"John", lastname?:"Doe")
+            jokesViewModel.getCustomJoke(name ?: "John", lastname ?: "Doe")
 
-            flag=true
+            flag = true
         }
 
         jokesViewModel.customJoke.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UIState.LOADING -> {
                     Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "LOADING")
-                    binding.loadingSpinner.visibility = View.VISIBLE
-
+                    if (flag)
+                        binding.loadingSpinner.visibility = View.VISIBLE
+                    else
+                        binding.loadingSpinner.visibility = View.GONE
                 }
                 is UIState.SUCCESS<*> -> {
                     Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "SUCCESS")
@@ -81,7 +83,7 @@ class InputFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-            flag = false
+        flag = false
         Log.d("CLASS::${javaClass.simpleName} MESSAGE ->", "DESTROYED")
     }
 }
